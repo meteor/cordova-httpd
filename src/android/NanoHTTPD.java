@@ -905,7 +905,7 @@ public class NanoHTTPD
 			Log.d(LOGTAG, "home dir: " + homeDir.getAbsolutePath());
 			f = new AndroidFile( homeDir, uri );
 		}
-    Log.d(LOGTAG, ">>> file string: " + f.toString());
+    Log.d(LOGTAG, ">>> file string: " + f.getAbsolutePath());
 
 		if ( res == null && !f.exists()) {
 			Log.d(LOGTAG, "FILE NOT FOUND " + f.toString());
