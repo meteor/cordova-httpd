@@ -900,7 +900,9 @@ public class NanoHTTPD
 				|| uri.startsWith("/plugins/")) {
 			try {
 				Log.d(LOGTAG, "redirecting for cordova stuff: " + uri);
-				f = new AndroidFile(homeDir.getCanonicalPath(), ".." + uri);
+				String parent = homeDir.getParent();
+				Log.w(LOGTAG, "the parent is " + parent);
+				f = new AndroidFile(parent, uri);
 				Log.w(LOGTAG, "__path is " + f.getPath());
 				Log.d(LOGTAG, "cordova root: " + f.getCanonicalPath());
 			} catch (IOException e) {
