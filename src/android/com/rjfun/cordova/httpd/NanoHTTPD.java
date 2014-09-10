@@ -901,6 +901,7 @@ public class NanoHTTPD
 			try {
 				Log.d(LOGTAG, "redirecting for cordova stuff: " + uri);
 				f = new AndroidFile(homeDir.getCanonicalPath(), ".." + uri);
+				Log.w(LOGTAG, "__path is " + f.getPath());
 				Log.d(LOGTAG, "cordova root: " + f.getCanonicalPath());
 			} catch (IOException e) {
 				throw new RuntimeException(
