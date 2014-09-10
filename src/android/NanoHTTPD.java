@@ -898,7 +898,7 @@ public class NanoHTTPD
 		// XXX HACKHACK serve cordova.js from the cordovaRoot folder
 		if (uri.equals("/cordova.js") || uri.equals("/cordova_plugins.js") || uri.startsWith("/plugins/")) {
 			Log.d(LOGTAG, "redirecting for cordova stuff: " + uri);
-			f = new AndroidFile(homeDir, "/.." + uri);
+			f = new AndroidFile(homeDir.getAbsolutePath() + "/.." + uri);
 			Log.d(LOGTAG, "cordova root: " + f.getAbsolutePath());
 		} else {
 			Log.d(LOGTAG, "not redirecting: " + uri);
@@ -908,7 +908,7 @@ public class NanoHTTPD
     Log.d(LOGTAG, ">>> file string: " + f.toString());
 
 		if ( res == null && !f.exists()) {
-			Log.d(LOGTAG, "FILE NOT FOUND");
+			Log.d(LOGTAG, "FILE NOT FOUND " + f.toString());
 			res = new Response( HTTP_NOTFOUND, MIME_PLAINTEXT,
 					"Error 404, file not found." );
 		}
