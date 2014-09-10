@@ -111,7 +111,8 @@ public class CorHttpd extends CordovaPlugin {
             callbackContext.error( exception.getMessage() );
             return null;
         }
-        
+        Log.w(LOGTAG, "doc root is" + docRoot);
+        Log.w(LOGTAG, "cordovaroot is" + docRoot);
         if(docRoot.startsWith("/")) {
     		//localPath = Environment.getExternalStorageDirectory().getAbsolutePath();
         	localPath = docRoot;
@@ -123,6 +124,7 @@ public class CorHttpd extends CordovaPlugin {
         		localPath += docRoot;
         	}
         }
+        Log.w(LOGTAG, "localpath is set to " + docRoot);
 
         final CallbackContext delayCallback = callbackContext;
         cordova.getActivity().runOnUiThread(new Runnable(){
