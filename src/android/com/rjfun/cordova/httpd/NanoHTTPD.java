@@ -910,6 +910,7 @@ public class NanoHTTPD
 		}
 
 		if (response == null && !f.exists()) {
+			Log.d(LOGTAG, "FILE NOT FOUND " + f.toString());
 			response = new Response(HTTP_NOTFOUND, MIME_PLAINTEXT, "Error 404, file not found.");
 		}
 
