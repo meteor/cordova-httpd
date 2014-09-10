@@ -149,7 +149,7 @@ public class CorHttpd extends CordovaPlugin {
 	        Context ctx = cordova.getActivity().getApplicationContext();
 			AssetManager am = ctx.getResources().getAssets();
     		f.setAssetManager( am );
-    		
+    		dumpAssets(am);
 			server = new WebServer(port, f, cordovaRoot);
 		} catch (IOException e) {
 			errmsg = String.format("IO Exception: %s", e.getMessage());
@@ -220,4 +220,30 @@ public class CorHttpd extends CordovaPlugin {
     public void onDestroy() {
     	__stopServer();
     }
+    
+	private void dumpAssets(AssetManager assetManager) {
+		String path = "";
+		try {
+			if (assetManager == null) {
+				Log.w("NanoHTTPD", "AssetManager null");
+				return;
+			}
+			String[] list;
+			try {
+				list = assetManager.list(path);
+			} catch (IOException e) {
+				Log.w("NanoHTTPD", "Error listing assets: " + path, e);
+				return;
+			}
+			if (list == null) {
+				Log.w("NanoHTTPD", "Asset list null");
+				return;
+			}
+			for (String s : list) {
+				Log.w("NanoHTTPD", "Found asset: " + s);
+			}
+		} catch (Exception e) {
+			Log.w("NanoHTTPD", "Error while dumping files in " + path, e);
+		}
+	}
 }
