@@ -872,15 +872,15 @@ public class NanoHTTPD
 	public Response serveFile( String uri, Properties header, AndroidFile homeDir,
 			boolean allowDirectoryListing )
  {
-		Response res = null;
+		Response response = null;
 
 		// Make sure we won't die of an exception later
 		if (!homeDir.isDirectory())
-			res = new Response(HTTP_INTERNALERROR, MIME_PLAINTEXT,
+			response = new Response(HTTP_INTERNALERROR, MIME_PLAINTEXT,
 					"INTERNAL ERRROR: serveFile(): given homeDir is not a directory: "
 							+ homeDir.getAbsolutePath());
 
-		if (res == null) {
+		if (response == null) {
 			// Remove URL arguments
 			uri = uri.trim().replace(File.separatorChar, '/');
 			if (uri.indexOf('?') >= 0)
@@ -889,7 +889,7 @@ public class NanoHTTPD
 			// Prohibit getting out of current directory
 			if (uri.startsWith("..") || uri.endsWith("..")
 					|| uri.indexOf("../") >= 0)
-				res = new Response(HTTP_FORBIDDEN, MIME_PLAINTEXT,
+				response = new Response(HTTP_FORBIDDEN, MIME_PLAINTEXT,
 						"FORBIDDEN: Won't serve ../ for security reasons.");
 		}
 
@@ -900,7 +900,7 @@ public class NanoHTTPD
 				|| uri.startsWith("/plugins/")) {
 			try {
 				Log.d(LOGTAG, "redirecting for cordova stuff: " + uri);
-				f = new AndroidFile(homeDir.getCanonicalPath() + "/.." + uri);
+				f = new AndroidFile(homeDir.getCanonicalPath(), ".." + uri);
 				Log.d(LOGTAG, "cordova root: " + f.getCanonicalPath());
 			} catch (IOException e) {
 				throw new RuntimeException(
@@ -918,25 +918,25 @@ public class NanoHTTPD
 					"unexpected ioexceptions canonical path", e);
 		}
 
-		if (res == null && !f.exists()) {
+		if (response == null && !f.exists()) {
 			Log.d(LOGTAG, "FILE NOT FOUND " + f.toString());
-			res = new Response(HTTP_NOTFOUND, MIME_PLAINTEXT,
+			response = new Response(HTTP_NOTFOUND, MIME_PLAINTEXT,
 					"Error 404, file not found.");
 		}
 
 		// List the directory, if necessary
-		if (res == null && f.isDirectory()) {
+		if (response == null && f.isDirectory()) {
 			// Browsers get confused without '/' after the
 			// directory, send a redirect.
 			if (!uri.endsWith("/")) {
 				uri += "/";
-				res = new Response(HTTP_REDIRECT, MIME_HTML,
+				response = new Response(HTTP_REDIRECT, MIME_HTML,
 						"<html><body>Redirected: <a href=\"" + uri + "\">"
 								+ uri + "</a></body></html>");
-				res.addHeader("Location", uri);
+				response.addHeader("Location", uri);
 			}
 
-			if (res == null) {
+			if (response == null) {
 				// First try index.html and index.htm
 				if (new AndroidFile(f, "index.html").exists())
 					f = new AndroidFile(homeDir, uri + "/index.html");
@@ -990,16 +990,16 @@ public class NanoHTTPD
 						}
 					}
 					msg += "</body></html>";
-					res = new Response(HTTP_OK, MIME_HTML, msg);
+					response = new Response(HTTP_OK, MIME_HTML, msg);
 				} else {
-					res = new Response(HTTP_FORBIDDEN, MIME_PLAINTEXT,
+					response = new Response(HTTP_FORBIDDEN, MIME_PLAINTEXT,
 							"FORBIDDEN: No directory listing.");
 				}
 			}
 		}
 
 		try {
-			if (res == null) {
+			if (response == null) {
 				// Get MIME type from file name extension, if possible
 				String mime = null;
 				int dot = f.getCanonicalPath().lastIndexOf('.');
@@ -1032,6 +1032,7 @@ public class NanoHTTPD
 										.substring(minus + 1));
 							}
 						} catch (NumberFormatException nfe) {
+							//XXX do something with the exception
 						}
 					}
 				}
@@ -1044,10 +1045,10 @@ public class NanoHTTPD
 
 				if (range != null && startFrom >= 0) {
 					if (startFrom >= fileLen) {
-						res = new Response(HTTP_RANGE_NOT_SATISFIABLE,
+						response = new Response(HTTP_RANGE_NOT_SATISFIABLE,
 								MIME_PLAINTEXT, "");
-						res.addHeader("Content-Range", "bytes 0-0/" + fileLen);
-						res.addHeader("ETag", etag);
+						response.addHeader("Content-Range", "bytes 0-0/" + fileLen);
+						response.addHeader("ETag", etag);
 					} else {
 						if (endAt < 0)
 							endAt = fileLen - 1;
@@ -1063,33 +1064,33 @@ public class NanoHTTPD
 						InputStream fis = f.getInputStream();
 						fis.skip(startFrom);
 
-						res = new Response(HTTP_PARTIALCONTENT, mime, fis);
-						res.addHeader("Content-Length", "" + dataLen);
-						res.addHeader("Content-Range", "bytes " + startFrom
+						response = new Response(HTTP_PARTIALCONTENT, mime, fis);
+						response.addHeader("Content-Length", "" + dataLen);
+						response.addHeader("Content-Range", "bytes " + startFrom
 								+ "-" + endAt + "/" + fileLen);
-						res.addHeader("ETag", etag);
+						response.addHeader("ETag", etag);
 					}
 				} else {
 					if (etag.equals(header.getProperty("if-none-match")))
-						res = new Response(HTTP_NOTMODIFIED, mime, "");
+						response = new Response(HTTP_NOTMODIFIED, mime, "");
 					else {
 						// res = new Response( HTTP_OK, mime, new
 						// FileInputStream( f ));
-						res = new Response(HTTP_OK, mime, f.getInputStream());
-						res.addHeader("Content-Length", "" + fileLen);
-						res.addHeader("ETag", etag);
+						response = new Response(HTTP_OK, mime, f.getInputStream());
+						response.addHeader("Content-Length", "" + fileLen);
+						response.addHeader("ETag", etag);
 					}
 				}
 			}
 		} catch (IOException ioe) {
-			res = new Response(HTTP_FORBIDDEN, MIME_PLAINTEXT,
+			response = new Response(HTTP_FORBIDDEN, MIME_PLAINTEXT,
 					"FORBIDDEN: Reading file failed.");
 		}
 
-		res.addHeader("Accept-Ranges", "bytes"); // Announce that the file
+		response.addHeader("Accept-Ranges", "bytes"); // Announce that the file
 													// server accepts partial
 													// content requestes
-		return res;
+		return response;
 	}
 
 	/**
