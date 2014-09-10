@@ -116,8 +116,6 @@ public class CorHttpd extends CordovaPlugin {
             callbackContext.error( exception.getMessage() );
             return null;
         }
-        Log.w(LOGTAG, "doc root is " + docRoot);
-        Log.w(LOGTAG, "cordovaroot is " + cordovaRoot);
 		if (docRoot.startsWith("../../Documents/meteor")) {
 			Context ctx = cordova.getActivity().getApplicationContext();
 			localPath = new File(ctx.getApplicationInfo().dataDir, docRoot.substring(6)).getAbsolutePath();
@@ -166,12 +164,6 @@ public class CorHttpd extends CordovaPlugin {
 	    		f.setAssetManager( am );
 	    		dumpAssets(am);
 	        }
-    		Log.w(LOGTAG, "dumping content for " + new File(localPath).getAbsolutePath());
-    		dumpFolder(new File(localPath));
-    		Log.w(LOGTAG, "dumping content for /data/data at " + new File("/data/data/com.meteor.leaderboard").getAbsolutePath());
-    		dumpFolder(new File("/data/data/com.meteor.leaderboard") );
-    		Log.w(LOGTAG, "dumping content for android_asset at " + new File("/android_asset").getAbsolutePath());
-    		dumpFolder(new File("/android_asset"));
 			server = new WebServer(port, f, cordovaRoot, ctx.getResources().getAssets());
 		} catch (IOException e) {
 			errmsg = String.format("IO Exception: %s", e.getMessage());
