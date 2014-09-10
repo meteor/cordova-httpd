@@ -71,7 +71,7 @@ import android.util.Log;
 @SuppressWarnings("unchecked")
 public class NanoHTTPD
 {
-	private final String LOGTAG = "NanoHTTPD";
+	private final String LOGTAG = "CorHttpd";
 	
 	// ==================================================
 	// API parts
