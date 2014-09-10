@@ -16,7 +16,7 @@ public class AndroidFile extends File {
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	private final String LOGTAG = "AndroidFile";
+	private final String LOGTAG = "CorHttpd";
 	
 	private String __path = "";
 	private AssetManager __am = null;
@@ -80,6 +80,7 @@ public class AndroidFile extends File {
 				return files.length > 0;
 				
 			} catch (IOException e) {
+				Log.w(LOGTAG, e);
 				return false;
 			} 
 		}
@@ -95,6 +96,7 @@ public class AndroidFile extends File {
 				is.close();
 				return true;
 			} catch (IOException e) {
+				Log.w(LOGTAG, e);
 				return false;
 			} 
 		}
@@ -105,6 +107,7 @@ public class AndroidFile extends File {
 	@Override
 	public boolean exists() {
 		if(isAsset()) {
+			Log.w(LOGTAG, "file " + __path + "  is an asset");
 			return isFile() || isDirectory();
 		}
 

@@ -903,6 +903,7 @@ public class NanoHTTPD
 				String parent = homeDir.getParent();
 				Log.w(LOGTAG, "the parent is " + parent);
 				f = new AndroidFile(parent, uri);
+				f.setAssetManager(homeDir.getAssetManager());
 				Log.w(LOGTAG, "__path is " + f.getPath());
 				Log.d(LOGTAG, "cordova root: " + f.getCanonicalPath());
 			} catch (IOException e) {
