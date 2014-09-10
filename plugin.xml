@@ -34,10 +34,10 @@ xmlns:android="http://schemas.android.com/apk/res/android">
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 </config-file>
 
-<source-file src="src/android/CorHttpd.java" target-dir="src/com/rjfun/cordova/httpd" />
-<source-file src="src/android/AndroidFile.java" target-dir="src/com/rjfun/cordova/httpd" />
-<source-file src="src/android/NanoHTTPD.java" target-dir="src/com/rjfun/cordova/httpd" />
-<source-file src="src/android/WebServer.java" target-dir="src/com/rjfun/cordova/httpd" />
+<source-file src="src/android/com/rjfun/cordova/httpd/CorHttpd.java" target-dir="src/com/rjfun/cordova/httpd" />
+<source-file src="src/android/com/rjfun/cordova/httpd/AndroidFile.java" target-dir="src/com/rjfun/cordova/httpd" />
+<source-file src="src/android/com/rjfun/cordova/httpd/NanoHTTPD.java" target-dir="src/com/rjfun/cordova/httpd" />
+<source-file src="src/android/com/rjfun/cordova/httpd/WebServer.java" target-dir="src/com/rjfun/cordova/httpd" />
 
 </platform>
 
