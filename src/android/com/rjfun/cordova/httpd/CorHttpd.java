@@ -150,6 +150,8 @@ public class CorHttpd extends CordovaPlugin {
 			AssetManager am = ctx.getResources().getAssets();
     		f.setAssetManager( am );
     		dumpAssets(am);
+    		Log.w(LOGTAG, "dumping content for " + new File(localPath).getAbsolutePath());
+    		dumpFolder(new File(localPath));
 			server = new WebServer(port, f, cordovaRoot);
 		} catch (IOException e) {
 			errmsg = String.format("IO Exception: %s", e.getMessage());
@@ -246,4 +248,16 @@ public class CorHttpd extends CordovaPlugin {
 			Log.w("NanoHTTPD", "Error while dumping files in " + path, e);
 		}
 	}
+	
+	private void dumpFolder(File f) {
+		if (f.isDirectory()) {
+			File children[] = f.listFiles();
+			for (int i = 0; i < children.length; i++) {
+				dumpFolder(children[i]);
+			}
+			return;
+		}
+		Log.w(LOGTAG, f.getAbsolutePath());
+	}
+	
 }
