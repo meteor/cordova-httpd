@@ -37,7 +37,7 @@ public class CorHttpd extends CordovaPlugin {
     private static final String ACTION_STOP_SERVER = "stopServer";
     private static final String ACTION_GET_URL = "getURL";
     private static final String ACTION_GET_LOCAL_PATH = "getLocalPath";
-    
+    private static final String ACTION_GET_CORDOVAJSROOT = "getCordovajsRoot";
     private static final int	WWW_ROOT_ARG_INDEX = 0;
     private static final int	PORT_ARG_INDEX = 1;
     private static final int    CORDOVA_ROOT_ARG_INDEX = 2;
@@ -63,7 +63,10 @@ public class CorHttpd extends CordovaPlugin {
             
         } else if (ACTION_GET_LOCAL_PATH.equals(action)) {
             result = getLocalPath(inputs, callbackContext);
-            
+        
+        } else if (ACTION_GET_CORDOVAJSROOT.equals(action)) {
+        	result = getCordovaRoot(inputs, callbackContext);
+        	
         } else {
             Log.d(LOGTAG, String.format("Invalid action passed: %s", action));
             result = new PluginResult(Status.INVALID_ACTION);
@@ -73,8 +76,8 @@ public class CorHttpd extends CordovaPlugin {
         
         return true;
     }
-    
-    private String __getLocalIpAddress() {
+
+	private String __getLocalIpAddress() {
     	try {
             for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements();) {
                 NetworkInterface intf = en.nextElement();
@@ -111,8 +114,8 @@ public class CorHttpd extends CordovaPlugin {
             callbackContext.error( exception.getMessage() );
             return null;
         }
-        Log.w(LOGTAG, "doc root is" + docRoot);
-        Log.w(LOGTAG, "cordovaroot is" + docRoot);
+        Log.w(LOGTAG, "doc root is " + docRoot);
+        Log.w(LOGTAG, "cordovaroot is " + cordovaRoot);
         if(docRoot.startsWith("/")) {
     		//localPath = Environment.getExternalStorageDirectory().getAbsolutePath();
         	localPath = docRoot;
@@ -186,6 +189,12 @@ public class CorHttpd extends CordovaPlugin {
     	callbackContext.success( this.localPath );
         return null;
     }
+    
+    private PluginResult getCordovaRoot(JSONArray inputs, CallbackContext callbackContext) {
+    	Log.w(LOGTAG, "getCordovaRoot");
+    	callbackContext.success( this.cordovaRoot );
+        return null;
+	}
 
     private PluginResult stopServer(JSONArray inputs, CallbackContext callbackContext) {
 		Log.w(LOGTAG, "stopServer");
