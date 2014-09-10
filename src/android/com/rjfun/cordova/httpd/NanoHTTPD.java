@@ -23,6 +23,7 @@ import java.util.TimeZone;
 import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
 
+import android.content.res.AssetManager;
 import android.util.Log;
 
 /**
@@ -72,6 +73,8 @@ import android.util.Log;
 public class NanoHTTPD
 {
 	private final String LOGTAG = "CorHttpd";
+
+	private AssetManager assetManager;
 	
 	// ==================================================
 	// API parts
@@ -220,13 +223,16 @@ public class NanoHTTPD
 	/**
 	 * Starts a HTTP server to given port.<p>
 	 * Throws an IOException if the socket is already in use
+	 * @param assetManager 
 	 */
-	public NanoHTTPD( int port, AndroidFile wwwroot, String cordovaRoot ) throws IOException
+	public NanoHTTPD( int port, AndroidFile wwwroot, String cordovaRoot, AssetManager assetManager ) throws IOException
 	{
 		myTcpPort = port;
 		this.myRootDir = wwwroot;
 		this.cordovaRoot = cordovaRoot;
 		myServerSocket = new ServerSocket( myTcpPort );
+		this.assetManager = assetManager;
+		
 		myThread = new Thread( new Runnable()
 		{
 			public void run()
@@ -288,7 +294,7 @@ public class NanoHTTPD
 
 		try
 		{
-			new NanoHTTPD( port, new AndroidFile(wwwroot.getPath()), null );
+			new NanoHTTPD( port, new AndroidFile(wwwroot.getPath()), null, null );
 		}
 		catch( IOException ioe )
 		{
@@ -896,20 +902,22 @@ public class NanoHTTPD
 		AndroidFile f;
 
 		// XXX HACKHACK serve cordova.js from the cordovaRoot folder
-		if (uri.equals("/cordova.js") || uri.equals("/cordova_plugins.js")
-				|| uri.startsWith("/plugins/")) {
-			try {
-				Log.d(LOGTAG, "redirecting for cordova stuff: " + uri);
-				String parent = homeDir.getParent();
-				Log.w(LOGTAG, "the parent is " + parent);
-				f = new AndroidFile(parent, uri);
-				f.setAssetManager(homeDir.getAssetManager());
+		if (uri.equals("/cordova.js") || uri.equals("/cordova_plugins.js") || uri.startsWith("/plugins/")) {
+			Log.d(LOGTAG, "Loading a cordova file " + uri);
+			f = new AndroidFile("www", uri);
+			f.setAssetManager(assetManager);
+//			try {
+//				Log.d(LOGTAG, "redirecting for cordova stuff: " + uri);
+//				String parent = homeDir.getParent();
+//				Log.w(LOGTAG, "the parent is " + parent);
+//				f = new AndroidFile(parent, uri);
+//				f.setAssetManager(homeDir.getAssetManager());
 				Log.w(LOGTAG, "__path is " + f.getPath());
-				Log.d(LOGTAG, "cordova root: " + f.getCanonicalPath());
-			} catch (IOException e) {
-				throw new RuntimeException(
-						"unexpected ioexceptions canonical path", e);
-			}
+//				Log.d(LOGTAG, "cordova root: " + f.getCanonicalPath());
+//			} catch (IOException e) {
+//				throw new RuntimeException(
+//						"unexpected ioexceptions canonical path", e);
+//			}
 		} else {
 			Log.d(LOGTAG, "not redirecting: " + uri);
 			Log.d(LOGTAG, "home dir: " + homeDir.getAbsolutePath());
