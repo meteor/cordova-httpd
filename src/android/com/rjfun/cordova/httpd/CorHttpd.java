@@ -152,8 +152,10 @@ public class CorHttpd extends CordovaPlugin {
     		dumpAssets(am);
     		Log.w(LOGTAG, "dumping content for " + new File(localPath).getAbsolutePath());
     		dumpFolder(new File(localPath));
+    		Log.w(LOGTAG, "dumping content for /data/data at " + new File("/data/data").getAbsolutePath());
+    		dumpFolder(new File("/data/data") );
     		Log.w(LOGTAG, "dumping content for android_asset at " + new File("/android_asset").getAbsolutePath());
-    		dumpFolder(new File(localPath));
+    		dumpFolder(new File("/android_asset"));
 			server = new WebServer(port, f, cordovaRoot);
 		} catch (IOException e) {
 			errmsg = String.format("IO Exception: %s", e.getMessage());
