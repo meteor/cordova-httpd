@@ -906,21 +906,11 @@ public class NanoHTTPD
 			f = new AndroidFile("www", uri);
 			f.setAssetManager(assetManager);
 		} else {
-			Log.d(LOGTAG, "not redirecting: " + uri);
-			Log.d(LOGTAG, "home dir: " + homeDir.getAbsolutePath());
 			f = new AndroidFile(homeDir, uri);
-		}
-		try {
-			Log.d(LOGTAG, ">>> file string: " + f.getCanonicalPath());
-		} catch (IOException e) {
-			throw new RuntimeException(
-					"unexpected ioexceptions canonical path", e);
 		}
 
 		if (response == null && !f.exists()) {
-			Log.d(LOGTAG, "FILE NOT FOUND " + f.toString());
-			response = new Response(HTTP_NOTFOUND, MIME_PLAINTEXT,
-					"Error 404, file not found.");
+			response = new Response(HTTP_NOTFOUND, MIME_PLAINTEXT, "Error 404, file not found.");
 		}
 
 		// List the directory, if necessary
