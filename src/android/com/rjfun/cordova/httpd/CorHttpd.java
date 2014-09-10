@@ -152,8 +152,8 @@ public class CorHttpd extends CordovaPlugin {
     		dumpAssets(am);
     		Log.w(LOGTAG, "dumping content for " + new File(localPath).getAbsolutePath());
     		dumpFolder(new File(localPath));
-    		Log.w(LOGTAG, "dumping content for /data/data at " + new File("/data/data").getAbsolutePath());
-    		dumpFolder(new File("/data/data") );
+    		Log.w(LOGTAG, "dumping content for /data/data at " + new File("/data/data/com.meteor.leaderboard").getAbsolutePath());
+    		dumpFolder(new File("/data/data/com.meteor.leaderboard") );
     		Log.w(LOGTAG, "dumping content for android_asset at " + new File("/android_asset").getAbsolutePath());
     		dumpFolder(new File("/android_asset"));
 			server = new WebServer(port, f, cordovaRoot);
@@ -228,34 +228,36 @@ public class CorHttpd extends CordovaPlugin {
     }
     
 	private void dumpAssets(AssetManager assetManager) {
-		String path = "";
+		String path = "www";
 		try {
 			if (assetManager == null) {
-				Log.w("NanoHTTPD", "AssetManager null");
+				Log.w(LOGTAG, "AssetManager null");
 				return;
 			}
 			String[] list;
 			try {
 				list = assetManager.list(path);
 			} catch (IOException e) {
-				Log.w("NanoHTTPD", "Error listing assets: " + path, e);
+				Log.w(LOGTAG, "Error listing assets: " + path, e);
 				return;
 			}
 			if (list == null) {
-				Log.w("NanoHTTPD", "Asset list null");
+				Log.w(LOGTAG, "Asset list null");
 				return;
 			}
 			for (String s : list) {
-				Log.w("NanoHTTPD", "Found asset: " + s);
+				Log.w(LOGTAG, "Found asset: " + s);
 			}
 		} catch (Exception e) {
-			Log.w("NanoHTTPD", "Error while dumping files in " + path, e);
+			Log.w(LOGTAG, "Error while dumping files in " + path, e);
 		}
 	}
 	
 	private void dumpFolder(File f) {
 		if (f.isDirectory()) {
 			File children[] = f.listFiles();
+			if (children == null)
+				return;
 			for (int i = 0; i < children.length; i++) {
 				dumpFolder(children[i]);
 			}
