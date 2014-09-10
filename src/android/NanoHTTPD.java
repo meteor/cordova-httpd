@@ -897,15 +897,19 @@ public class NanoHTTPD
 
 		// XXX HACKHACK serve cordova.js from the cordovaRoot folder
 		if (uri.equals("/cordova.js") || uri.equals("/cordova_plugins.js") || uri.startsWith("/plugins/")) {
-			Log.d(LOGTAG, "redirecting for cordova stuff: " + uri);
-			f = new AndroidFile(homeDir.getAbsolutePath() + "/.." + uri);
-			Log.d(LOGTAG, "cordova root: " + f.getAbsolutePath());
+      try {
+        Log.d(LOGTAG, "redirecting for cordova stuff: " + uri);
+        f = new AndroidFile(homeDir.getCanonicalPath() + "/.." + uri);
+        Log.d(LOGTAG, "cordova root: " + f.getCanonicalPath());
+      } catch (IOException e) { Log.d(LOGTAG, "unexpected ioexceptions canonical path");  }
 		} else {
 			Log.d(LOGTAG, "not redirecting: " + uri);
 			Log.d(LOGTAG, "home dir: " + homeDir.getAbsolutePath());
 			f = new AndroidFile( homeDir, uri );
 		}
-    Log.d(LOGTAG, ">>> file string: " + f.getAbsolutePath());
+    try {
+      Log.d(LOGTAG, ">>> file string: " + f.getCanonicalPath());
+    } catch (IOException e) { Log.d(LOGTAG, "unexpected ioexceptions canonical path"); }
 
 		if ( res == null && !f.exists()) {
 			Log.d(LOGTAG, "FILE NOT FOUND " + f.toString());
