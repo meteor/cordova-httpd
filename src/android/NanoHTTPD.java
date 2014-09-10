@@ -901,7 +901,7 @@ public class NanoHTTPD
         Log.d(LOGTAG, "redirecting for cordova stuff: " + uri);
         f = new AndroidFile(homeDir.getCanonicalPath() + "/.." + uri);
         Log.d(LOGTAG, "cordova root: " + f.getCanonicalPath());
-      } catch (IOException e) { Log.d(LOGTAG, "unexpected ioexceptions canonical path");  }
+      } catch (IOException e) { throw new RuntimeException("unexpected ioexceptions canonical path", e);  }
 		} else {
 			Log.d(LOGTAG, "not redirecting: " + uri);
 			Log.d(LOGTAG, "home dir: " + homeDir.getAbsolutePath());
@@ -909,7 +909,7 @@ public class NanoHTTPD
 		}
     try {
       Log.d(LOGTAG, ">>> file string: " + f.getCanonicalPath());
-    } catch (IOException e) { Log.d(LOGTAG, "unexpected ioexceptions canonical path"); }
+    } catch (IOException e) { throw new RuntimeException("unexpected ioexceptions canonical path", e);  }
 
 		if ( res == null && !f.exists()) {
 			Log.d(LOGTAG, "FILE NOT FOUND " + f.toString());
